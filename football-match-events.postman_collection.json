@@ -1,0 +1,136 @@
+{
+	"info": {
+		"_postman_id": "c00a714c-02be-464b-b076-84d12d7187f7",
+		"name": "football-match-events",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41099136"
+	},
+	"item": [
+		{
+			"name": "Ingestion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "// Goal Event\n{\n  \"matchId\": \"12345\",\n  \"timestamp\": \"2025-04-06T10:30:00Z\",\n  \"type\": \"GOAL_SCORED\",\n  \"eventId\": \"goal-001\",\n  \"data\": {\n    \"scorer\": \"Player A\",\n    \"assist\": \"Player B\"\n  }\n}\n\n// Pass Event\n\n//{\n  //\"matchId\": \"12345\",\n  //\"timestamp\": \"2025-04-06T10:35:00Z\",\n  //\"type\": \"PASS_COMPLETED\",\n  //\"eventId\": \"pass-001\",\n  //\"data\": {\n   // \"passer\": \"Player C\",\n    //\"receiver\": \"Player D\"\n  //}\n//}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-id.execute-api.region.amazonaws.com/dev/ingestion",
+					"protocol": "https",
+					"host": [
+						"api-id",
+						"execute-api",
+						"region",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"ingestion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Processing",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "// Goal Event\n{\n  \"matchId\": \"12345\",\n  \"timestamp\": \"2025-04-06T10:30:00Z\",\n  \"type\": \"GOAL_SCORED\",\n  \"eventId\": \"goal-001\",\n  \"data\": {\n    \"scorer\": \"Player A\",\n    \"assist\": \"Player B\"\n  }\n}\n\n// Pass Event\n\n//{\n  //\"matchId\": \"12345\",\n  //\"timestamp\": \"2025-04-06T10:35:00Z\",\n  //\"type\": \"PASS_COMPLETED\",\n  //\"eventId\": \"pass-001\",\n  //\"data\": {\n   // \"passer\": \"Player C\",\n    //\"receiver\": \"Player D\"\n  //}\n//}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-id.execute-api.region.amazonaws.com/dev/processing",
+					"protocol": "https",
+					"host": [
+						"api-id",
+						"execute-api",
+						"region",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"processing"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query- goal",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api-id.execute-api.region.amazonaws.com/dev/matches/12345/goals?type=goal",
+					"protocol": "https",
+					"host": [
+						"api-id",
+						"execute-api",
+						"region",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"matches",
+						"12345",
+						"goals"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "goal"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query- pass",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api-id.execute-api.region.amazonaws.com/dev/matches/12345/passes?type=pass",
+					"protocol": "https",
+					"host": [
+						"api-id",
+						"execute-api",
+						"region",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"matches",
+						"12345",
+						"passes"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "pass"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
