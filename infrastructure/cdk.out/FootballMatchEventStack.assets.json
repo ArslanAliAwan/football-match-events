@@ -1,0 +1,19 @@
+{
+  "version": "40.0.0",
+  "files": {
+    "2bfbcbff8cd7e5f46bdc42dc86a4e43797a1e0c8dedabd8cd765aba8c60dd667": {
+      "source": {
+        "path": "FootballMatchEventStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-localstack-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "2bfbcbff8cd7e5f46bdc42dc86a4e43797a1e0c8dedabd8cd765aba8c60dd667.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-localstack-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

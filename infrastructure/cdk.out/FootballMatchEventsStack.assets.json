@@ -1,0 +1,76 @@
+{
+  "version": "40.0.0",
+  "files": {
+    "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6": {
+      "source": {
+        "path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "000000000000-eu-central-1": {
+          "bucketName": "cdk-localstack-assets-000000000000-eu-central-1",
+          "objectKey": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+          "region": "eu-central-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::000000000000:role/cdk-localstack-file-publishing-role-000000000000-eu-central-1"
+        }
+      }
+    },
+    "e7579dd66be17e648a947ce13d174d641acef93b7b24e6e96d1a95c9cf244c14": {
+      "source": {
+        "path": "asset.e7579dd66be17e648a947ce13d174d641acef93b7b24e6e96d1a95c9cf244c14",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "000000000000-eu-central-1": {
+          "bucketName": "cdk-localstack-assets-000000000000-eu-central-1",
+          "objectKey": "e7579dd66be17e648a947ce13d174d641acef93b7b24e6e96d1a95c9cf244c14.zip",
+          "region": "eu-central-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::000000000000:role/cdk-localstack-file-publishing-role-000000000000-eu-central-1"
+        }
+      }
+    },
+    "da1dba4d0a74d09a10775c5deca3b881784cc016261f523909cbb689b019def5": {
+      "source": {
+        "path": "asset.da1dba4d0a74d09a10775c5deca3b881784cc016261f523909cbb689b019def5",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "000000000000-eu-central-1": {
+          "bucketName": "cdk-localstack-assets-000000000000-eu-central-1",
+          "objectKey": "da1dba4d0a74d09a10775c5deca3b881784cc016261f523909cbb689b019def5.zip",
+          "region": "eu-central-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::000000000000:role/cdk-localstack-file-publishing-role-000000000000-eu-central-1"
+        }
+      }
+    },
+    "58a3a14d11e7d40c99ef9edc0dee3734378e098b08294dd15f38c51a90d1fd62": {
+      "source": {
+        "path": "asset.58a3a14d11e7d40c99ef9edc0dee3734378e098b08294dd15f38c51a90d1fd62",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "000000000000-eu-central-1": {
+          "bucketName": "cdk-localstack-assets-000000000000-eu-central-1",
+          "objectKey": "58a3a14d11e7d40c99ef9edc0dee3734378e098b08294dd15f38c51a90d1fd62.zip",
+          "region": "eu-central-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::000000000000:role/cdk-localstack-file-publishing-role-000000000000-eu-central-1"
+        }
+      }
+    },
+    "823728e77b72c55936aade4f51091aa05a06647f4179f816e86be8678a683037": {
+      "source": {
+        "path": "FootballMatchEventsStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "000000000000-eu-central-1": {
+          "bucketName": "cdk-localstack-assets-000000000000-eu-central-1",
+          "objectKey": "823728e77b72c55936aade4f51091aa05a06647f4179f816e86be8678a683037.json",
+          "region": "eu-central-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::000000000000:role/cdk-localstack-file-publishing-role-000000000000-eu-central-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

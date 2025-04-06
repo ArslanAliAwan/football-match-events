@@ -1,0 +1,920 @@
+{
+ "Resources": {
+  "RawMatchEventsBucket8A18CE45": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "default-s3-bucket",
+    "LifecycleConfiguration": {
+     "Rules": [
+      {
+       "ExpirationInDays": 30,
+       "Status": "Enabled",
+       "Transitions": [
+        {
+         "StorageClass": "STANDARD_IA",
+         "TransitionInDays": 15
+        }
+       ]
+      }
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     }
+    ],
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/RawMatchEventsBucket/Resource"
+   }
+  },
+  "RawMatchEventsBucketPolicyBFFCD9D6": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "RawMatchEventsBucket8A18CE45"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:PutBucketPolicy"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "RawMatchEventsBucket8A18CE45",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "RawMatchEventsBucket8A18CE45",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/RawMatchEventsBucket/Policy/Resource"
+   }
+  },
+  "RawMatchEventsBucketAutoDeleteObjectsCustomResource9087AC2C": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "RawMatchEventsBucket8A18CE45"
+    }
+   },
+   "DependsOn": [
+    "RawMatchEventsBucketPolicyBFFCD9D6"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/RawMatchEventsBucket/AutoDeleteObjectsCustomResource/Default"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-localstack-assets-000000000000-eu-central-1",
+     "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Lambda function for auto-deleting objects in ",
+       {
+        "Ref": "RawMatchEventsBucket8A18CE45"
+       },
+       " S3 bucket."
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+    "aws:asset:property": "Code"
+   }
+  },
+  "MatchEventsTableBFE68ADA": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "match_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "match_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "TableName": "MatchEventsTable",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsTable/Resource"
+   }
+  },
+  "MatchEventsEventBus504478FF": {
+   "Type": "AWS::Events::EventBus",
+   "Properties": {
+    "Name": "football-match-events-bus"
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsEventBus/Resource"
+   }
+  },
+  "IngestionLambdaRole9BF0731D": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/IngestionLambdaRole/Resource"
+   }
+  },
+  "IngestionLambdaRoleDefaultPolicy1ABB879B": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "events:PutEvents",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "MatchEventsEventBus504478FF",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "IngestionLambdaRoleDefaultPolicy1ABB879B",
+    "Roles": [
+     {
+      "Ref": "IngestionLambdaRole9BF0731D"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/IngestionLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProcessingLambdaRoleA5BAFD41": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/ProcessingLambdaRole/Resource"
+   }
+  },
+  "ProcessingLambdaRoleDefaultPolicyC39B3C11": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "MatchEventsTableBFE68ADA",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProcessingLambdaRoleDefaultPolicyC39B3C11",
+    "Roles": [
+     {
+      "Ref": "ProcessingLambdaRoleA5BAFD41"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/ProcessingLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "QueryLambdaRoleCE6738E6": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/QueryLambdaRole/Resource"
+   }
+  },
+  "QueryLambdaRoleDefaultPolicyC9F17784": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "MatchEventsTableBFE68ADA",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "QueryLambdaRoleDefaultPolicyC9F17784",
+    "Roles": [
+     {
+      "Ref": "QueryLambdaRoleCE6738E6"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/QueryLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "IngestionLambdaEF25F265": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-localstack-assets-000000000000-eu-central-1",
+     "S3Key": "e7579dd66be17e648a947ce13d174d641acef93b7b24e6e96d1a95c9cf244c14.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "EVENT_BUS_NAME": {
+       "Ref": "MatchEventsEventBus504478FF"
+      },
+      "RAW_EVENTS_BUCKET": {
+       "Ref": "RawMatchEventsBucket8A18CE45"
+      }
+     }
+    },
+    "Handler": "index.handler",
+    "MemorySize": 1024,
+    "Role": {
+     "Fn::GetAtt": [
+      "IngestionLambdaRole9BF0731D",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 60
+   },
+   "DependsOn": [
+    "IngestionLambdaRoleDefaultPolicy1ABB879B",
+    "IngestionLambdaRole9BF0731D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/IngestionLambda/Resource",
+    "aws:asset:path": "asset.e7579dd66be17e648a947ce13d174d641acef93b7b24e6e96d1a95c9cf244c14",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "ProcessingLambda0A3B4A63": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-localstack-assets-000000000000-eu-central-1",
+     "S3Key": "da1dba4d0a74d09a10775c5deca3b881784cc016261f523909cbb689b019def5.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DYNAMODB_TABLE": {
+       "Ref": "MatchEventsTableBFE68ADA"
+      }
+     }
+    },
+    "Handler": "index.handler",
+    "MemorySize": 1024,
+    "Role": {
+     "Fn::GetAtt": [
+      "ProcessingLambdaRoleA5BAFD41",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 60
+   },
+   "DependsOn": [
+    "ProcessingLambdaRoleDefaultPolicyC39B3C11",
+    "ProcessingLambdaRoleA5BAFD41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/ProcessingLambda/Resource",
+    "aws:asset:path": "asset.da1dba4d0a74d09a10775c5deca3b881784cc016261f523909cbb689b019def5",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "QueryLambda54767050": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-localstack-assets-000000000000-eu-central-1",
+     "S3Key": "58a3a14d11e7d40c99ef9edc0dee3734378e098b08294dd15f38c51a90d1fd62.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DYNAMODB_TABLE": {
+       "Ref": "MatchEventsTableBFE68ADA"
+      }
+     }
+    },
+    "Handler": "index.handler",
+    "MemorySize": 1024,
+    "Role": {
+     "Fn::GetAtt": [
+      "QueryLambdaRoleCE6738E6",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 60
+   },
+   "DependsOn": [
+    "QueryLambdaRoleDefaultPolicyC9F17784",
+    "QueryLambdaRoleCE6738E6"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/QueryLambda/Resource",
+    "aws:asset:path": "asset.58a3a14d11e7d40c99ef9edc0dee3734378e098b08294dd15f38c51a90d1fd62",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "MatchEventsApi3DDBF23F": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "API for querying match events",
+    "Name": "MatchEventsApi"
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Resource"
+   }
+  },
+  "MatchEventsApiDeployment33CA1AA34312c8a3a54620495000866fd321557a": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "API for querying match events",
+    "RestApiId": {
+     "Ref": "MatchEventsApi3DDBF23F"
+    }
+   },
+   "DependsOn": [
+    "MatchEventsApimatchesmatchidgoalsGET8A7B4D20",
+    "MatchEventsApimatchesmatchidgoals7E2DF540",
+    "MatchEventsApimatchesmatchidpassesGET8D4CA7A4",
+    "MatchEventsApimatchesmatchidpasses1FAA3A0F",
+    "MatchEventsApimatchesmatchid40731C83",
+    "MatchEventsApimatches02249991"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Deployment/Resource"
+   }
+  },
+  "MatchEventsApiDeploymentStageprod5B4CBE97": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "MatchEventsApiDeployment33CA1AA34312c8a3a54620495000866fd321557a"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": false,
+      "HttpMethod": "*",
+      "LoggingLevel": "INFO",
+      "MetricsEnabled": true,
+      "ResourcePath": "/*"
+     }
+    ],
+    "RestApiId": {
+     "Ref": "MatchEventsApi3DDBF23F"
+    },
+    "StageName": "prod"
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "MatchEventsApimatches02249991": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "MatchEventsApi3DDBF23F",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "matches",
+    "RestApiId": {
+     "Ref": "MatchEventsApi3DDBF23F"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Default/matches/Resource"
+   }
+  },
+  "MatchEventsApimatchesmatchid40731C83": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "MatchEventsApimatches02249991"
+    },
+    "PathPart": "{match_id}",
+    "RestApiId": {
+     "Ref": "MatchEventsApi3DDBF23F"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/Resource"
+   }
+  },
+  "MatchEventsApimatchesmatchidgoals7E2DF540": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "MatchEventsApimatchesmatchid40731C83"
+    },
+    "PathPart": "goals",
+    "RestApiId": {
+     "Ref": "MatchEventsApi3DDBF23F"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/goals/Resource"
+   }
+  },
+  "MatchEventsApimatchesmatchidgoalsGETApiPermissionFootballMatchEventsStackMatchEventsApiA61A9E4BGETmatchesmatchidgoalsA410C254": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "QueryLambda54767050",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:000000000000:",
+       {
+        "Ref": "MatchEventsApi3DDBF23F"
+       },
+       "/",
+       {
+        "Ref": "MatchEventsApiDeploymentStageprod5B4CBE97"
+       },
+       "/GET/matches/*/goals"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/goals/GET/ApiPermission.FootballMatchEventsStackMatchEventsApiA61A9E4B.GET..matches.{match_id}.goals"
+   }
+  },
+  "MatchEventsApimatchesmatchidgoalsGETApiPermissionTestFootballMatchEventsStackMatchEventsApiA61A9E4BGETmatchesmatchidgoalsE04EB3F5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "QueryLambda54767050",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:000000000000:",
+       {
+        "Ref": "MatchEventsApi3DDBF23F"
+       },
+       "/test-invoke-stage/GET/matches/*/goals"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/goals/GET/ApiPermission.Test.FootballMatchEventsStackMatchEventsApiA61A9E4B.GET..matches.{match_id}.goals"
+   }
+  },
+  "MatchEventsApimatchesmatchidgoalsGET8A7B4D20": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "QueryLambda54767050",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "MatchEventsApimatchesmatchidgoals7E2DF540"
+    },
+    "RestApiId": {
+     "Ref": "MatchEventsApi3DDBF23F"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/goals/GET/Resource"
+   }
+  },
+  "MatchEventsApimatchesmatchidpasses1FAA3A0F": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "MatchEventsApimatchesmatchid40731C83"
+    },
+    "PathPart": "passes",
+    "RestApiId": {
+     "Ref": "MatchEventsApi3DDBF23F"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/passes/Resource"
+   }
+  },
+  "MatchEventsApimatchesmatchidpassesGETApiPermissionFootballMatchEventsStackMatchEventsApiA61A9E4BGETmatchesmatchidpassesBFFFB4F6": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "QueryLambda54767050",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:000000000000:",
+       {
+        "Ref": "MatchEventsApi3DDBF23F"
+       },
+       "/",
+       {
+        "Ref": "MatchEventsApiDeploymentStageprod5B4CBE97"
+       },
+       "/GET/matches/*/passes"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/passes/GET/ApiPermission.FootballMatchEventsStackMatchEventsApiA61A9E4B.GET..matches.{match_id}.passes"
+   }
+  },
+  "MatchEventsApimatchesmatchidpassesGETApiPermissionTestFootballMatchEventsStackMatchEventsApiA61A9E4BGETmatchesmatchidpassesB02575C0": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "QueryLambda54767050",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:eu-central-1:000000000000:",
+       {
+        "Ref": "MatchEventsApi3DDBF23F"
+       },
+       "/test-invoke-stage/GET/matches/*/passes"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/passes/GET/ApiPermission.Test.FootballMatchEventsStackMatchEventsApiA61A9E4B.GET..matches.{match_id}.passes"
+   }
+  },
+  "MatchEventsApimatchesmatchidpassesGET8D4CA7A4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "QueryLambda54767050",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "MatchEventsApimatchesmatchidpasses1FAA3A0F"
+    },
+    "RestApiId": {
+     "Ref": "MatchEventsApi3DDBF23F"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/passes/GET/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/+1WS2/cNhD+LeHRoNXERoFib3K8KYz6sd3dHoKFseCSE3lsihTIkQyV0H8vSD1WiYPkELRJgB4EUjPDme+bIYc8y9789mv2+pV49qdSPZ1qPGRhQ0I+cfHs98GfZ+Gilk9Au8AOaXIrSmALdsI4a8B5tAYUW5CrgTMw0rUVoTVswTbn+5v8Nv99eck4c1DaRuiV1ShbtmAKPDnbMs5ETfYSNBDcHR5Bkh+dafwAspUa1rUGzxa7wMgJ4zH69wlCd9/xwIRS13Pbz5vyBPmE3Xf3/O0H07Pi/dDDmigOvo9mvX4wvhAedvcdV60RpVWHLGzFQUOMGcdZfirhKEH4A1q2CMwcVdRWcbqJuLx1lCyS5oBaoylurIoGq/z9frVc79fLP/9abrZfzCRhCVt7jQ3kRA4PNU1ALBq6MlssYQ3SNuDaPss9yYS/49CAIZ+FZRwvar8LvXr87ziKMgtrm8gK7+sS1EViVjk0EiuhcyltbWiI29vEBbkcdsUJ64aabe3IIQY6CkdXL7REQj5cGY0GJl0q6FeVSt0IIwpQR5+snEtyZ+Yb6n9qPxu1tFEjZD6c5chkDLC1UfMi7kuxUhsSBGU8ByOFH85Rotqz7LgW5UGJLLyrTarVLjBXm9gJhmI+CKM0uOFP9l0lTl2KlKZgGnTWxCBje8ISbD3+lVBa127wbxhaaQK2nK/aTd31a8rvD+87I0j1G+uVagmuRB9v0o77873wHshneRy4qLAQBM+izcIaPOUVxhL3s9lVo8BLh9V0XKOk0ra9q4YrMDBPopjfTiWQQ+mXJnb/6QrXtijQFNfQgGYLdnX77o51w/Hqo/LL5DnS2oXPBBYVjhkEEmiO5n6ena29tgVKoa/UJ73kv5YnckeUfBMTlaiNooHPN2QwxUiO+Rq8rZ2E9I6IO2KS7EJ8MhzjVYIeVsLRlLZ/STtWN4HgN0APVvW7LEnGg0JU9bpBgIagcGJWelvNH1zf7CHh6hd0HX9be7LllKuUuTnuj/UrZxtU4GKWeTpLMftoCj73wGdf8nZXU1VTx41VkD36X5qzs+zNefb61aNHPB06R7bux38A+Q4TOz4LAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "FootballMatchEventsStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "MatchEventsApiEndpoint0F9435EA": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "MatchEventsApi3DDBF23F"
+      },
+      ".execute-api.eu-central-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "MatchEventsApiDeploymentStageprod5B4CBE97"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "EventBusName": {
+   "Value": {
+    "Ref": "MatchEventsEventBus504478FF"
+   }
+  },
+  "RawEventsBucketName": {
+   "Value": {
+    "Ref": "RawMatchEventsBucket8A18CE45"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/localstack/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
