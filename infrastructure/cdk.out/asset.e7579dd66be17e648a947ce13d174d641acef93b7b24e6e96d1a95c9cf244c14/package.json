@@ -1,0 +1,25 @@
+{
+    "name": "event-ingestion-lambda",
+    "version": "1.0.0",
+    "description": "Match Event Ingestion and Distribution Lambda Function",
+    "main": "dist/index.js",
+    "scripts": {
+      "build": "tsc",
+      "watch": "tsc -w",
+      "test": "jest"
+    },
+    "dependencies": {
+      "@aws-sdk/client-eventbridge": "^3.485.0",
+      "@aws-sdk/client-s3": "^3.485.0",
+      "uuid": "^9.0.1"
+    },
+    "devDependencies": {
+      "@types/aws-lambda": "^8.10.130",
+      "@types/node": "^20.11.19",
+      "@types/uuid": "^9.0.8",
+      "typescript": "^5.3.3",
+      "jest": "^29.7.0",
+      "@types/jest": "^29.5.12",
+      "ts-jest": "^29.1.2"
+    }
+  }

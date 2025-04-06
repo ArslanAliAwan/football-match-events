@@ -1,0 +1,833 @@
+{
+  "version": "40.0.0",
+  "artifacts": {
+    "FootballMatchEventsStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "FootballMatchEventsStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/localstack/version"
+      }
+    },
+    "FootballMatchEventsStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://000000000000/eu-central-1",
+      "properties": {
+        "templateFile": "FootballMatchEventsStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::000000000000:role/cdk-localstack-deploy-role-000000000000-eu-central-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::000000000000:role/cdk-localstack-cfn-exec-role-000000000000-eu-central-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-localstack-assets-000000000000-eu-central-1/823728e77b72c55936aade4f51091aa05a06647f4179f816e86be8678a683037.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/localstack/version",
+        "additionalDependencies": [
+          "FootballMatchEventsStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::000000000000:role/cdk-localstack-lookup-role-000000000000-eu-central-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/localstack/version"
+        }
+      },
+      "dependencies": [
+        "FootballMatchEventsStack.assets"
+      ],
+      "metadata": {
+        "/FootballMatchEventsStack/RawMatchEventsBucket": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "bucketName": "*",
+              "versioned": true,
+              "encryption": "S3_MANAGED",
+              "removalPolicy": "destroy",
+              "autoDeleteObjects": true,
+              "lifecycleRules": [
+                {
+                  "transitions": "*"
+                }
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addLifecycleRule": [
+                {
+                  "transitions": "*"
+                },
+                "*",
+                "*"
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/RawMatchEventsBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RawMatchEventsBucket8A18CE45"
+          }
+        ],
+        "/FootballMatchEventsStack/RawMatchEventsBucket/Policy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "bucket": "*"
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/RawMatchEventsBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RawMatchEventsBucketPolicyBFFCD9D6"
+          }
+        ],
+        "/FootballMatchEventsStack/RawMatchEventsBucket/AutoDeleteObjectsCustomResource": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/FootballMatchEventsStack/RawMatchEventsBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RawMatchEventsBucketAutoDeleteObjectsCustomResource9087AC2C"
+          }
+        ],
+        "/FootballMatchEventsStack/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/FootballMatchEventsStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/FootballMatchEventsStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsTable": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "tableName": "*",
+              "partitionKey": {
+                "name": "*",
+                "type": "S"
+              },
+              "sortKey": "*",
+              "billingMode": "PAY_PER_REQUEST",
+              "removalPolicy": "destroy",
+              "timeToLiveAttribute": "*",
+              "pointInTimeRecovery": true
+            }
+          },
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "MatchEventsTableBFE68ADA"
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsTableBFE68ADA"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsTable/ScalingRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsEventBus": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {}
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsEventBus/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsEventBus504478FF"
+          }
+        ],
+        "/FootballMatchEventsStack/IngestionLambdaRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addManagedPolicy": [
+                {
+                  "managedPolicyArn": "*"
+                }
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/IngestionLambdaRole/ImportIngestionLambdaRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/FootballMatchEventsStack/IngestionLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IngestionLambdaRole9BF0731D"
+          }
+        ],
+        "/FootballMatchEventsStack/IngestionLambdaRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/IngestionLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IngestionLambdaRoleDefaultPolicy1ABB879B"
+          }
+        ],
+        "/FootballMatchEventsStack/ProcessingLambdaRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addManagedPolicy": [
+                {
+                  "managedPolicyArn": "*"
+                }
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/ProcessingLambdaRole/ImportProcessingLambdaRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/FootballMatchEventsStack/ProcessingLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProcessingLambdaRoleA5BAFD41"
+          }
+        ],
+        "/FootballMatchEventsStack/ProcessingLambdaRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/ProcessingLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProcessingLambdaRoleDefaultPolicyC39B3C11"
+          }
+        ],
+        "/FootballMatchEventsStack/QueryLambdaRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addManagedPolicy": [
+                {
+                  "managedPolicyArn": "*"
+                }
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/QueryLambdaRole/ImportQueryLambdaRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/FootballMatchEventsStack/QueryLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryLambdaRoleCE6738E6"
+          }
+        ],
+        "/FootballMatchEventsStack/QueryLambdaRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/QueryLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryLambdaRoleDefaultPolicyC9F17784"
+          }
+        ],
+        "/FootballMatchEventsStack/IngestionLambda": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "runtime": "*",
+              "handler": "*",
+              "code": "*",
+              "role": "*",
+              "environment": "*",
+              "timeout": "*",
+              "memorySize": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/IngestionLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IngestionLambdaEF25F265"
+          }
+        ],
+        "/FootballMatchEventsStack/ProcessingLambda": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "runtime": "*",
+              "handler": "*",
+              "code": "*",
+              "role": "*",
+              "environment": "*",
+              "timeout": "*",
+              "memorySize": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/ProcessingLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProcessingLambda0A3B4A63"
+          }
+        ],
+        "/FootballMatchEventsStack/QueryLambda": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "runtime": "*",
+              "handler": "*",
+              "code": "*",
+              "role": "*",
+              "environment": "*",
+              "timeout": "*",
+              "memorySize": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/QueryLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryLambda54767050"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "restApiName": "*",
+              "description": "*",
+              "deployOptions": {
+                "stageName": "*",
+                "metricsEnabled": true,
+                "loggingLevel": "INFO"
+              }
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApi3DDBF23F"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Deployment": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "description": "*",
+              "api": "*",
+              "retainDeployments": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToLogicalId": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToLogicalId": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToLogicalId": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToLogicalId": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToLogicalId": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToLogicalId": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApiDeployment33CA1AA34312c8a3a54620495000866fd321557a"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/DeploymentStage.prod": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "deployment": "*",
+              "stageName": "*",
+              "metricsEnabled": true,
+              "loggingLevel": "INFO"
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApiDeploymentStageprod5B4CBE97"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApiEndpoint0F9435EA"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "parent": "*",
+              "pathPart": "*"
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApimatches02249991"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "parent": "*",
+              "pathPart": "*"
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApimatchesmatchid40731C83"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/goals": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "parent": "*",
+              "pathPart": "*"
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/goals/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApimatchesmatchidgoals7E2DF540"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/goals/GET": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "resource": "*",
+              "httpMethod": "*",
+              "integration": "*",
+              "options": "*"
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/goals/GET/ApiPermission.FootballMatchEventsStackMatchEventsApiA61A9E4B.GET..matches.{match_id}.goals": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApimatchesmatchidgoalsGETApiPermissionFootballMatchEventsStackMatchEventsApiA61A9E4BGETmatchesmatchidgoalsA410C254"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/goals/GET/ApiPermission.Test.FootballMatchEventsStackMatchEventsApiA61A9E4B.GET..matches.{match_id}.goals": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApimatchesmatchidgoalsGETApiPermissionTestFootballMatchEventsStackMatchEventsApiA61A9E4BGETmatchesmatchidgoalsE04EB3F5"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/goals/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApimatchesmatchidgoalsGET8A7B4D20"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/passes": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "parent": "*",
+              "pathPart": "*"
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/passes/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApimatchesmatchidpasses1FAA3A0F"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/passes/GET": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "resource": "*",
+              "httpMethod": "*",
+              "integration": "*",
+              "options": "*"
+            }
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/passes/GET/ApiPermission.FootballMatchEventsStackMatchEventsApiA61A9E4B.GET..matches.{match_id}.passes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApimatchesmatchidpassesGETApiPermissionFootballMatchEventsStackMatchEventsApiA61A9E4BGETmatchesmatchidpassesBFFFB4F6"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/passes/GET/ApiPermission.Test.FootballMatchEventsStackMatchEventsApiA61A9E4B.GET..matches.{match_id}.passes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApimatchesmatchidpassesGETApiPermissionTestFootballMatchEventsStackMatchEventsApiA61A9E4BGETmatchesmatchidpassesB02575C0"
+          }
+        ],
+        "/FootballMatchEventsStack/MatchEventsApi/Default/matches/{match_id}/passes/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchEventsApimatchesmatchidpassesGET8D4CA7A4"
+          }
+        ],
+        "/FootballMatchEventsStack/EventBusName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventBusName"
+          }
+        ],
+        "/FootballMatchEventsStack/RawEventsBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RawEventsBucketName"
+          }
+        ],
+        "/FootballMatchEventsStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/FootballMatchEventsStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/FootballMatchEventsStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "FootballMatchEventsStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
